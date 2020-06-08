@@ -4,7 +4,7 @@ interface
 
 uses PythonEngine, WrapDelphi, WrapDelphiVCL;
 
-procedure initDelphi; cdecl;
+function PyInit_Delphi: PPyObject; cdecl;
 
 var
   gEngine : TPythonEngine;
@@ -13,11 +13,15 @@ var
 
 implementation
 
-procedure initDelphi;
+function PyInit_Delphi: PPyObject;
 begin
   try
     gEngine := TPythonEngine.Create(nil);
     gEngine.AutoFinalize := False;
+    gEngine.UseLastKnownVersion := False;
+    // Adapt to the desired python version
+    gEngine.RegVersion := '3.8';
+    gEngine.DllName := 'python38.dll';
 
     gModule := TPythonModule.Create(nil);
     gModule.Engine := gEngine;
@@ -30,12 +34,14 @@ begin
     gEngine.LoadDll;
   except
   end;
+  Result := gModule.Module;
 end;
 
 initialization
 finalization
   gEngine.Free;
   gModule.Free;
+  gDelphiWrapper.Free;
 end.
 
 

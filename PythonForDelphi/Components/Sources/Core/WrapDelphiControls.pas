@@ -55,7 +55,7 @@ type
 
     class function ExpectedContainerClass : TClass; override;
     class function SupportsIndexOf : Boolean; override;
-    class function Name : String; override;
+    class function Name : string; override;
 
     property Container : TWinControl read GetContainer;
   end;
@@ -148,7 +148,7 @@ uses
 type
   TControlsRegistration = class(TRegisteredUnit)
   public
-    function Name : String; override;
+    function Name : string; override;
     procedure RegisterWrappers(APyDelphiWrapper : TPyDelphiWrapper); override;
     procedure DefineVars(APyDelphiWrapper : TPyDelphiWrapper); override;
   end;
@@ -172,7 +172,7 @@ begin
   APyDelphiWrapper.DefineVar('mrYesToAll',  mrYesToAll);
 end;
 
-function TControlsRegistration.Name: String;
+function TControlsRegistration.Name: string;
 begin
   Result := 'Controls';
 end;
@@ -192,9 +192,9 @@ end;
 
 function TPyDelphiControl.BringToFront_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':BringToFront') <> 0 then begin
       DelphiObject.BringToFront;
       Result := ReturnNone;
@@ -209,9 +209,9 @@ var
   p : TPoint;
   pt : PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, 'O:ClientToScreen',@pt ) <> 0 then begin
       if CheckPointAttribute(pt, 'point', p) then
         Result := WrapPoint(PyDelphiWrapper, DelphiObject.ClientToScreen(p))
@@ -234,17 +234,15 @@ end;
 
 function TPyDelphiControl.Get_Parent(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := Wrap(DelphiObject.Parent);
-  end;
+  Adjust(@Self);
+  Result := Wrap(DelphiObject.Parent);
 end;
 
 function TPyDelphiControl.Hide_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':Hide') <> 0 then begin
       DelphiObject.Hide;
       Result := ReturnNone;
@@ -255,9 +253,9 @@ end;
 
 function TPyDelphiControl.Invalidate_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':Invalidate') <> 0 then begin
       DelphiObject.Invalidate;
       Result := ReturnNone;
@@ -310,9 +308,9 @@ end;
 
 function TPyDelphiControl.Repaint_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':Repaint') <> 0 then begin
       DelphiObject.Repaint;
       Result := ReturnNone;
@@ -327,24 +325,22 @@ var
   p : TPoint;
   pt : PPyObject;
 begin
-  with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
-    if PyArg_ParseTuple( args, 'O:ScreenToClient',@pt ) <> 0 then begin
-      if CheckPointAttribute(pt, 'point', p) then
-        Result := WrapPoint(PyDelphiWrapper, DelphiObject.ScreenToClient(p))
-      else
-        Result := nil;
-    end else
+  // We adjust the transmitted self argument
+  Adjust(@Self);
+  if GetPythonEngine.PyArg_ParseTuple( args, 'O:ScreenToClient',@pt ) <> 0 then begin
+    if CheckPointAttribute(pt, 'point', p) then
+      Result := WrapPoint(PyDelphiWrapper, DelphiObject.ScreenToClient(p))
+    else
       Result := nil;
-  end;
+  end else
+    Result := nil;
 end;
 
 function TPyDelphiControl.SendToBack_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':SendToBack') <> 0 then begin
       DelphiObject.SendToBack;
       Result := ReturnNone;
@@ -360,9 +356,9 @@ var
   _width : Integer;
   _height : Integer;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, 'iiii:SetBounds',@_left, @_top, @_width, @_height ) <> 0 then begin
       DelphiObject.SetBounds(_left, _top, _width, _height);
       Result := ReturnNone;
@@ -381,23 +377,21 @@ function TPyDelphiControl.Set_Parent(AValue: PPyObject;
 var
   _object : TObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckObjAttribute(AValue, 'Parent', TWinControl, _object) then
-    begin
-      Self.DelphiObject.Parent := TWinControl(_object);
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckObjAttribute(AValue, 'Parent', TWinControl, _object) then
+  begin
+    Self.DelphiObject.Parent := TWinControl(_object);
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiControl.Show_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':Show') <> 0 then begin
       DelphiObject.Show;
       Result := ReturnNone;
@@ -408,9 +402,9 @@ end;
 
 function TPyDelphiControl.Update_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':Update') <> 0 then begin
       DelphiObject.Update;
       Result := ReturnNone;
@@ -483,7 +477,7 @@ begin
   end;
 end;
 
-class function TControlsAccess.Name: String;
+class function TControlsAccess.Name: string;
 begin
   Result := 'Controls';
 end;
@@ -497,9 +491,9 @@ end;
 
 function TPyDelphiWinControl.CanFocus_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':CanFocus') <> 0 then begin
       Result := VariantAsPyObject(DelphiObject.CanFocus)
     end else
@@ -519,62 +513,48 @@ end;
 
 function TPyDelphiWinControl.Get_ControlCount(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.ControlCount);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.ControlCount);
 end;
 
 function TPyDelphiWinControl.Get_Controls(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := Self.PyDelphiWrapper.DefaultContainerType.CreateInstance;
-    with PythonToDelphi(Result) as TPyDelphiContainer do
-      Setup(Self.PyDelphiWrapper, TControlsAccess.Create(Self.PyDelphiWrapper, Self.DelphiObject));
-  end;
+  Adjust(@Self);
+  Result := Self.PyDelphiWrapper.DefaultContainerType.CreateInstance;
+  with PythonToDelphi(Result) as TPyDelphiContainer do
+    Setup(Self.PyDelphiWrapper, TControlsAccess.Create(Self.PyDelphiWrapper, Self.DelphiObject));
 end;
 
 function TPyDelphiWinControl.Get_Focused(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := VariantAsPyObject(DelphiObject.Focused);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.VariantAsPyObject(DelphiObject.Focused);
 end;
 
 function TPyDelphiWinControl.Get_Handle(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.Handle);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.Handle);
 end;
 
 function TPyDelphiWinControl.Get_HandleAllocated(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := VariantAsPyObject(DelphiObject.HandleAllocated);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.VariantAsPyObject(DelphiObject.HandleAllocated);
 end;
 
 function TPyDelphiWinControl.Get_ParentWindow(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.ParentWindow);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.ParentWindow);
 end;
 
 function TPyDelphiWinControl.Get_Showing(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := VariantAsPyObject(DelphiObject.Showing);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.VariantAsPyObject(DelphiObject.Showing);
 end;
 
 class procedure TPyDelphiWinControl.RegisterGetSets(
@@ -592,7 +572,7 @@ begin
   PythonType.AddGetSet('HandleAllocated', @TPyDelphiWinControl.Get_HandleAllocated, nil,
         'Reports whether a screen object handle exists for the control.', nil);
   PythonType.AddGetSet('ParentWindow', @TPyDelphiWinControl.Get_ParentWindow, nil,
-        'Reference to parent’s underlying control.', nil);
+        'Reference to parent''s underlying control.', nil);
   PythonType.AddGetSet('Showing', @TPyDelphiWinControl.Get_Showing, nil,
         'Indicates whether the control is showing on the screen. ', nil);
 end;
@@ -616,9 +596,9 @@ end;
 
 function TPyDelphiWinControl.SetFocus_Wrapper(args: PPyObject): PPyObject;
 begin
+  // We adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // We adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, ':SetFocus') <> 0 then begin
       DelphiObject.SetFocus;
       Result := ReturnNone;
@@ -682,7 +662,7 @@ procedure TKeyPressEventHandler.DoEvent(Sender: TObject;
 Var
   PyObject, PyTuple, PyResult, PyKey : PPyObject;
   _varParam : TPyDelphiVarParameter;
-  _key : String;
+  _key : string;
 begin
   Assert(Assigned(PyDelphiWrapper));
   if Assigned(Callable) and PythonOK then

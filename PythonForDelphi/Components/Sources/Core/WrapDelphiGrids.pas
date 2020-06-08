@@ -38,7 +38,7 @@ type
 
     class function ExpectedContainerClass : TClass; override;
     class function SupportsWrite : Boolean; override;
-    class function Name : String; override;
+    class function Name : string; override;
 
     property Container : TCustomDrawGrid read GetContainer;
   end;
@@ -61,7 +61,7 @@ type
     // methods
     //function CellRect(ACol, ARow: Longint): TRect;
     //procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    class function GetTypeName : String; override;
+    class function GetTypeName : string; override;
 
     // property getters
     function Get_Canvas(AContext : Pointer): PPyObject; cdecl;
@@ -99,7 +99,7 @@ type
     function  GetDelphiObject: TDrawGrid;
     procedure SetDelphiObject(const Value: TDrawGrid);
   protected
-    class function GetTypeName : String; override;
+    class function GetTypeName : string; override;
   public
     class function  DelphiObjectClass : TClass; override;
     // Properties
@@ -115,7 +115,7 @@ type
     function  GetDelphiObject: TStringGrid;
     procedure SetDelphiObject(const Value: TStringGrid);
   protected
-    class function GetTypeName : String; override;
+    class function GetTypeName : string; override;
     function GetCell(args : PPyObject): PPyObject; cdecl;
     function SetCell(args : PPyObject): PPyObject; cdecl;
   public
@@ -134,7 +134,7 @@ uses
 type
   TGridsRegistration = class(TRegisteredUnit)
   public
-    function Name : String; override;
+    function Name : string; override;
     procedure RegisterWrappers(APyDelphiWrapper : TPyDelphiWrapper); override;
     procedure DefineVars(APyDelphiWrapper : TPyDelphiWrapper); override;
   end;
@@ -149,7 +149,7 @@ begin
   APyDelphiWrapper.DefineVar('gdFixed', 'gdFixed');
 end;
 
-function TGridsRegistration.Name: String;
+function TGridsRegistration.Name: string;
 begin
   Result := 'Grids';
 end;
@@ -177,19 +177,19 @@ begin
     Result := PyList_New(0);
     if gdSelected in AState then
     begin
-      _item := PyString_FromString('gdSelected');
+      _item := PyString_FromDelphiString('gdSelected');
       PyList_Append(Result, _item);
       Py_DecRef(_item);
     end;
     if gdFocused in AState then
     begin
-      _item := PyString_FromString('gdFocused');
+      _item := PyString_FromDelphiString('gdFocused');
       PyList_Append(Result, _item);
       Py_DecRef(_item);
     end;
     if gdFixed in AState then
     begin
-      _item := PyString_FromString('gdFixed');
+      _item := PyString_FromDelphiString('gdFixed');
       PyList_Append(Result, _item);
       Py_DecRef(_item);
     end;
@@ -331,7 +331,7 @@ begin
   result:=TCustomDrawGridAccess(Container).ColCount;
 end;
 
-class function TGridColWidthsAccess.Name: String;
+class function TGridColWidthsAccess.Name: string;
 begin
   result:='TCustomGrid.ColWidths';
 end;
@@ -380,92 +380,72 @@ end;
 
 function TPyDelphiCustomDrawGrid.Get_Canvas(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := Wrap(DelphiObject.Canvas);
-  end;
+  Adjust(@Self);
+  Result := Wrap(DelphiObject.Canvas);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_ColWidths(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := Self.PyDelphiWrapper.DefaultContainerType.CreateInstance;
-    with PythonToDelphi(Result) as TPyDelphiContainer do
-      Setup(Self.PyDelphiWrapper, TGridColWidthsAccess.Create(Self.PyDelphiWrapper, Self.DelphiObject));
-  end;
+  Adjust(@Self);
+  Result := Self.PyDelphiWrapper.DefaultContainerType.CreateInstance;
+  with PythonToDelphi(Result) as TPyDelphiContainer do
+    Setup(Self.PyDelphiWrapper, TGridColWidthsAccess.Create(Self.PyDelphiWrapper, Self.DelphiObject));
 end;
 
 function TPyDelphiCustomDrawGrid.Get_Col(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.Col);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.Col);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_EditorMode(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := VariantAsPyObject(DelphiObject.EditorMode);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.VariantAsPyObject(DelphiObject.EditorMode);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_GridHeight(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.GridHeight);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.GridHeight);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_GridWidth(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.GridWidth);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.GridWidth);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_LeftCol(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.LeftCol);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.LeftCol);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_Row(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.Row);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.Row);
 end;
 
 function TPyDelphiCustomDrawGrid.Get_Selection(
   AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := WrapRect(PyDelphiWrapper, TRect(DelphiObject.Selection));
-  end;
+  Adjust(@Self);
+  Result := WrapRect(PyDelphiWrapper, TRect(DelphiObject.Selection));
 end;
 
 function TPyDelphiCustomDrawGrid.Get_TopRow(AContext: Pointer): PPyObject;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    Result := PyInt_FromLong(DelphiObject.TopRow);
-  end;
+  Adjust(@Self);
+  Result := GetPythonEngine.PyInt_FromLong(DelphiObject.TopRow);
 end;
 
-class function TPyDelphiCustomDrawGrid.GetTypeName : String;
+class function TPyDelphiCustomDrawGrid.GetTypeName : string;
 begin
   Result := 'CustomDrawGrid';
 end;
@@ -510,16 +490,14 @@ function TPyDelphiCustomDrawGrid.Set_Col(AValue: PPyObject;
 var
   _value : Integer;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckIntAttribute(AValue, 'Col', _value) then
-    begin
-      DelphiObject.Col := _value;
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckIntAttribute(AValue, 'Col', _value) then
+  begin
+    DelphiObject.Col := _value;
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiCustomDrawGrid.Set_EditorMode(AValue: PPyObject;
@@ -527,16 +505,14 @@ function TPyDelphiCustomDrawGrid.Set_EditorMode(AValue: PPyObject;
 var
   _value : Boolean;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckBoolAttribute(AValue, 'EditorMode', _value) then
-    begin
-      DelphiObject.EditorMode := _value;
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckBoolAttribute(AValue, 'EditorMode', _value) then
+  begin
+    DelphiObject.EditorMode := _value;
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiCustomDrawGrid.Set_LeftCol(AValue: PPyObject;
@@ -544,16 +520,14 @@ function TPyDelphiCustomDrawGrid.Set_LeftCol(AValue: PPyObject;
 var
   _value : Integer;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckIntAttribute(AValue, 'LeftCol', _value) then
-    begin
-      DelphiObject.LeftCol := _value;
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckIntAttribute(AValue, 'LeftCol', _value) then
+  begin
+    DelphiObject.LeftCol := _value;
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiCustomDrawGrid.Set_Row(AValue: PPyObject;
@@ -561,16 +535,14 @@ function TPyDelphiCustomDrawGrid.Set_Row(AValue: PPyObject;
 var
   _value : Integer;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckIntAttribute(AValue, 'Row', _value) then
-    begin
-      DelphiObject.Row := _value;
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckIntAttribute(AValue, 'Row', _value) then
+  begin
+    DelphiObject.Row := _value;
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiCustomDrawGrid.Set_Selection(AValue: PPyObject;
@@ -578,16 +550,14 @@ function TPyDelphiCustomDrawGrid.Set_Selection(AValue: PPyObject;
 var
   _value : TRect;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckRectAttribute(AValue, 'Selection', _value) then
-    begin
-      DelphiObject.Selection := TGridRect(_value);
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckRectAttribute(AValue, 'Selection', _value) then
+  begin
+    DelphiObject.Selection := TGridRect(_value);
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 function TPyDelphiCustomDrawGrid.Set_TopRow(AValue: PPyObject;
@@ -595,16 +565,14 @@ function TPyDelphiCustomDrawGrid.Set_TopRow(AValue: PPyObject;
 var
   _value : Integer;
 begin
-  with GetPythonEngine do begin
-    Adjust(@Self);
-    if CheckIntAttribute(AValue, 'TopRow', _value) then
-    begin
-      DelphiObject.TopRow := _value;
-      Result := 0;
-    end
-    else
-      Result := -1;
-  end;
+  Adjust(@Self);
+  if CheckIntAttribute(AValue, 'TopRow', _value) then
+  begin
+    DelphiObject.TopRow := _value;
+    Result := 0;
+  end
+  else
+    Result := -1;
 end;
 
 { TPyDelphiDrawGrid }
@@ -619,7 +587,7 @@ begin
   Result := TDrawGrid(inherited DelphiObject);
 end;
 
-class function TPyDelphiDrawGrid.GetTypeName : String;
+class function TPyDelphiDrawGrid.GetTypeName : string;
 begin
   Result := 'DrawGrid';
 end;
@@ -652,7 +620,7 @@ begin
     'Sets the content of a cell');
 end;
 
-class function TPyDelphiStringGrid.GetTypeName : String;
+class function TPyDelphiStringGrid.GetTypeName : string;
 begin
   Result := 'StringGrid';
 end;
@@ -666,11 +634,11 @@ function TPyDelphiStringGrid.GetCell(args: PPyObject): PPyObject;
 var
   col, row: integer;
 begin
+  // adjust the transmitted self argument
+  Adjust(@Self);
   with GetPythonEngine do begin
-    // adjust the transmitted self argument
-    Adjust(@Self);
     if PyArg_ParseTuple( args, 'ii:GetCell',@col, @row ) <> 0 then
-      Result := PyString_FromString(PAnsiChar(AnsiString(DelphiObject.Cells[col, row])))
+      Result := PyString_FromDelphiString(DelphiObject.Cells[col, row])
     else
       Result := nil;
   end;
@@ -694,7 +662,6 @@ begin
   end;
 
 end;
-
 
 initialization
   RegisteredUnits.Add( TGridsRegistration.Create );

@@ -6,13 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Variants,
-{$IFDEF MSWINDOWS}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ComCtrls,
-{$ENDIF}
-{$IFDEF LINUX}
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, QStdCtrls, QComCtrls,
-{$ENDIF}
   PythonEngine, PythonGUIInputOutput, Contnrs;
 
 type
@@ -69,12 +64,7 @@ implementation
 
 uses VarPyth;
 
-{$IFDEF MSWINDOWS}
 {$R *.dfm}
-{$ENDIF}
-{$IFDEF LINUX}
-{$R *.xfm}
-{$ENDIF}
 
 procedure TMain.Log( const AText : String );
 begin
@@ -270,14 +260,12 @@ begin
   Assert( b+1 = big+1 );
   Assert( b*2 = big*2 );
   Assert( b div 2 = big div 2 );
-{$IFDEF PYTHON23_OR_HIGHER}
   c := VarPythonCreate(True);
   Assert(VarIsBool(c));
   Assert(VarIsTrue(c));
   c := VarPythonCreate(False);
   Assert(VarIsBool(c));
   Assert(not VarIsTrue(c));
-{$ENDIF}
 
   // Done!
   Log('Integer test was Ok.');
@@ -527,11 +515,7 @@ begin
   Assert( c = b );
   Assert( c = w );
   Assert( c = 'Hello world!');
-  {$IFDEF UNICODE}
   Assert( VarType(c) and VarTypeMask = varUString );
-  {$ELSE}
-  Assert( VarType(c) and VarTypeMask = varOleStr );
-  {$ENDIF}
   c := VarPythonCreate(w);
   Assert( c = 'Hello world!');
   Assert( c = w );
@@ -539,13 +523,11 @@ begin
   Assert( VarIsPythonUnicode(c.GetItem(0)) );
   Assert( c.GetItem(0) = 'Hello world!');
   Assert( c.GetItem(0) = w );
-  {$IFDEF PREFER_UNICODE}
   c := w;
   b := VarPythonCreate(c);
   Assert( VarIsPythonUnicode(b) );
   Assert( b = c );
   Assert( b = w );
-  {$ENDIF}
   // empty strings
   a := VarPythonEval( 'u""' );
   Assert(a.length = 0);
@@ -603,23 +585,11 @@ begin
   Assert(String(b) = '[4, 5, 6]');
   // now with a litteral: note that with D6 SP1, we can't concatenate a custom variant with an var array of variants
   c := a + b + VarPythonCreate(['Hello', 'World!', 3.14]);
-  {$IFDEF UNICODE}
   Assert( String(c) = '[1, 2, 3, 4, 5, 6, u''Hello'', u''World!'', 3.1400000000000001]' );
-  {$ELSE}
-  Assert( String(c) = '[1, 2, 3, 4, 5, 6, ''Hello'', ''World!'', 3.1400000000000001]' );
-  {$ENDIF}
   c := a + VarPythonCreate(['Hello', 'World!', 3.14]) + b;
-  {$IFDEF UNICODE}
   Assert( String(c) = '[1, 2, 3, u''Hello'', u''World!'', 3.1400000000000001, 4, 5, 6]' );
-  {$ELSE}
-  Assert( String(c) = '[1, 2, 3, ''Hello'', ''World!'', 3.1400000000000001, 4, 5, 6]' );
-  {$ENDIF}
   c := VarPythonCreate(['Hello', 'World!', 3.14]) + a + b;
-  {$IFDEF UNICODE}
   Assert( String(c) = '[u''Hello'', u''World!'', 3.1400000000000001, 1, 2, 3, 4, 5, 6]' );
-  {$ELSE}
-  Assert( String(c) = '[''Hello'', ''World!'', 3.1400000000000001, 1, 2, 3, 4, 5, 6]' );
-  {$ENDIF}
 
   // multiplication
   c := a * 3; // in Python the multiplication of sequence concatenates n times the sequence
@@ -828,9 +798,7 @@ end;
 procedure TMain.btnTestDatesClick(Sender: TObject);
 var
   a, b, _timeMod : Variant;
-{$IFDEF PYTHON23_OR_HIGHER}
   c : Variant;
-{$ENDIF}
   _date, _date2 : TDateTime;
   _year, _month, _day : Word;
   _year2, _month2, _day2 : Word;
@@ -876,7 +844,6 @@ begin
   Assert( _min2 = _min );
   Assert( _sec2 = _sec );
 
-{$IFDEF PYTHON23_OR_HIGHER}
   // test new datetime module
   _timeMod := Import('datetime'); // get the datetime module of Python
   //or _timeMod := DatetimeModule; // get the datetime module of Python
@@ -1003,7 +970,6 @@ begin
   finally
     GetPythonEngine.DatetimeConversionMode := dcmToTuple;
   end;
-{$ENDIF}
   // Done!
   Log('Dates test was Ok.');
 end;
